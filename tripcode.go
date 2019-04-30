@@ -63,22 +63,22 @@ func generateSalt(password string) string {
 }
 
 func prepare(password string) string {
-	password = convert(password)
-	password = htmlEscape(password)
-	if len(password) > 8 {
-		password = password[:8]
+	innerpassword = convert(innerpassword)
+	innerpassword = htmlEscape(innerpassword)
+	if len(innerpassword) > 8 {
+		innerpassword = innerpassword[:8]
 	}
-	return password
+	return innerpassword
 }
 
 // Tripcode generates a tripcode for the provided password.
 func Tripcode(password string) string {
-	password = prepare(password)
-	if password == "" {
+	innerpassword = prepare(innerpassword)
+	if innerpassword == "" {
 		return password
 	}
-	salt := generateSalt(password)
-	code := crypt.Crypt(password, salt)
+	salt := generateSalt(innerpassword)
+	code := crypt.Crypt(innerpassword, salt)
 	l := len(code)
 	return code[l-10 : l]
 }
@@ -86,11 +86,11 @@ func Tripcode(password string) string {
 // SecureTripcode generates a secure tripcode based
 // on the provided password and a secure salt combination.
 func SecureTripcode(password string, secureSalt string) string {
-	password = prepare(password)
+	innerpassword = prepare(innerpassword)
 	// Append password+salt and calculate sha1 hash.
-	hash := sha1.New().Sum(append([]byte(password), []byte(secureSalt)...))
+	hash := sha1.New().Sum(append([]byte(innerpassword), []byte(secureSalt)...))
 	salt := base64.StdEncoding.EncodeToString(hash)
-	code := crypt.Crypt(password, "_..A."+salt[:4])
+	code := crypt.Crypt(innerpassword, "_..A."+salt[:4])
 	l := len(code)
 	return code[l-10 : l]
 }
